@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 142 76% 98%;
+    --foreground: 142 10% 10%;
+
+    --card: 142 76% 99%;
+    --card-foreground: 142 10% 10%;
+
+    --popover: 142 76% 99%;
+    --popover-foreground: 142 10% 10%;
+
+    --primary: 142 70% 40%;
+    --primary-foreground: 142 10% 98%;
+
+    --secondary: 78 70% 50%;
+    --secondary-foreground: 78 10% 10%;
+
+    --muted: 142 10% 92%;
+    --muted-foreground: 142 5% 40%;
+
+    --accent: 25 70% 60%;
+    --accent-foreground: 25 10% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 142 20% 85%;
+    --input: 142 20% 85%;
+    --ring: 142 70% 40%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 142 50% 3%;
+    --foreground: 142 10% 98%;
+
+    --card: 142 50% 5%;
+    --card-foreground: 142 10% 98%;
+
+    --popover: 142 50% 5%;
+    --popover-foreground: 142 10% 98%;
+
+    --primary: 142 70% 40%;
+    --primary-foreground: 142 10% 98%;
+
+    --secondary: 78 70% 40%;
+    --secondary-foreground: 78 10% 98%;
+
+    --muted: 142 50% 10%;
+    --muted-foreground: 142 5% 65%;
+
+    --accent: 25 70% 50%;
+    --accent-foreground: 25 10% 98%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 142 50% 15%;
+    --input: 142 50% 15%;
+    --ring: 142 70% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-effect {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

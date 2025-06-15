@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Crop Recommendations - GreenVerse{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">
+            <i class="fas fa-seedling text-primary"></i> Crop Recommendations
+        </h2>
+        <p class="text-muted">Get personalized crop recommendations based on your location and climate</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Find Crops for Your Location</h5>
+                    <p class="text-muted">Enter your location to get climate-specific crop recommendations</p>
+                    
+                    <form>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <input type="text" class="form-control" placeholder="Enter city, state, or country...">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sample Recommendations -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt text-primary"></i> Portland, OR Climate Profile</h5>
+                </div>
+                <div class="card-body">
+                    <p>Climate information used for crop recommendations</p>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-thermometer-half text-danger"></i> Temperature</h6>
+                            <p class="small"><strong>Average:</strong> 55°F</p>
+                            <p class="small"><strong>Range:</strong> 35°F - 75°F</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-tint text-info"></i> Rainfall</h6>
+                            <p class="small">Annual: 36 inches</p>
+                        </div>
+                    </div>
+                    
+                    <h6><i class="fas fa-sun text-warning"></i> Growing Seasons</h6>
+                    <div class="mb-4">
+                        <span class="badge bg-light text-dark me-2">Spring (March-May)</span>
+                        <span class="badge bg-light text-dark me-2">Summer (June-August)</span>
+                        <span class="badge bg-light text-dark">Fall (September-November)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h4 class="mb-3">Recommended Crops</h4>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-leaf text-success me-3" style="font-size: 2rem;"></i>
+                                    <div>
+                                        <h6 class="mb-0">Tomatoes</h6>
+                                        <small class="text-muted">Vegetable</small>
+                                    </div>
+                                    <span class="badge bg-success ms-auto">Best Time: May-June</span>
+                                </div>
+                                <p class="small">Perfect for your climate zone. High yield potential with proper care.</p>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted">Growth Period</small>
+                                        <div class="fw-bold">75-85 days</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Water Needs</small>
+                                        <div class="fw-bold">Moderate</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Soil</small>
+                                        <div class="fw-bold">Well-drained</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-leaf text-success me-3" style="font-size: 2rem;"></i>
+                                    <div>
+                                        <h6 class="mb-0">Lettuce</h6>
+                                        <small class="text-muted">Leafy Green</small>
+                                    </div>
+                                    <span class="badge bg-success ms-auto">Best Time: March-April</span>
+                                </div>
+                                <p class="small">Cool season crop perfect for spring and fall growing.</p>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted">Growth Period</small>
+                                        <div class="fw-bold">45-65 days</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Water Needs</small>
+                                        <div class="fw-bold">Regular</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Soil</small>
+                                        <div class="fw-bold">Rich, moist</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-leaf text-success me-3" style="font-size: 2rem;"></i>
+                                    <div>
+                                        <h6 class="mb-0">Carrots</h6>
+                                        <small class="text-muted">Root Vegetable</small>
+                                    </div>
+                                    <span class="badge bg-success ms-auto">Best Time: April-July</span>
+                                </div>
+                                <p class="small">Excellent for your soil type and climate conditions.</p>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted">Growth Period</small>
+                                        <div class="fw-bold">70-80 days</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Water Needs</small>
+                                        <div class="fw-bold">Consistent</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Soil</small>
+                                        <div class="fw-bold">Sandy loam</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-leaf text-success me-3" style="font-size: 2rem;"></i>
+                                    <div>
+                                        <h6 class="mb-0">Basil</h6>
+                                        <small class="text-muted">Herb</small>
+                                    </div>
+                                    <span class="badge bg-success ms-auto">Best Time: May-June</span>
+                                </div>
+                                <p class="small">Warm season herb that thrives in your climate zone.</p>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted">Growth Period</small>
+                                        <div class="fw-bold">60-90 days</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Water Needs</small>
+                                        <div class="fw-bold">Regular</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Soil</small>
+                                        <div class="fw-bold">Well-drained</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

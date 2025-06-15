@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Login - GreenVerse{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center" style="min-height: 80vh; align-items: center;">
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-primary">
+                            <i class="fas fa-leaf"></i> GreenVerse
+                        </h2>
+                        <p class="text-muted">Welcome back to your plant community</p>
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                    </form>
+                    
+                    <div class="text-center">
+                        <p class="mb-0">Don't have an account? 
+                            <a href="{{ url_for('register') }}" class="text-primary">Create account</a>
+                        </p>
+                    </div>
+                    
+                    <!-- Demo Credentials -->
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6 class="fw-bold text-success mb-2">
+                            <i class="fas fa-info-circle"></i> Demo Credentials
+                        </h6>
+                        <div class="small">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span><strong>Email:</strong> test@example.com</span>
+                                <button type="button" class="btn btn-sm btn-outline-success" onclick="fillDemo()">
+                                    Fill Form
+                                </button>
+                            </div>
+                            <div><strong>Password:</strong> test</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillDemo() {
+    document.getElementById('email').value = 'test@example.com';
+    document.getElementById('password').value = 'test';
+}
+</script>
+{% endblock %}

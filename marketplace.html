@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace - GreenVerse{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Marketplace Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient text-white" style="background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));">
+                <div class="card-body text-center py-5">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="fas fa-store"></i> GreenVerse Marketplace
+                    </h1>
+                    <p class="lead mb-4">Discover amazing plants, tools, and gardening supplies from our community</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-light btn-lg" onclick="showVendorSection()">
+                            <i class="fas fa-plus"></i> Sell Products
+                        </button>
+                        <button class="btn btn-outline-light btn-lg" onclick="showCustomerSection()">
+                            <i class="fas fa-shopping-bag"></i> Shop Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sliding Sections Container -->
+    <div class="position-relative overflow-hidden" style="height: 80vh;">
+        <!-- Vendor Section -->
+        <div id="vendorSection" class="position-absolute w-100 h-100 transition-slide" style="transform: translateX(-100%); transition: transform 0.5s ease;">
+            <div class="row h-100">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-store"></i> Vendor Dashboard
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="addProductForm" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Product Name</label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Category</label>
+                                    <select class="form-select" name="category" required>
+                                        <option value="">Select Category</option>
+                                        <option value="plants">🌱 Plants</option>
+                                        <option value="seeds">🌾 Seeds</option>
+                                        <option value="pots">🏺 Pots & Containers</option>
+                                        <option value="tools">🔧 Garden Tools</option>
+                                        <option value="soil">🌿 Soil & Fertilizers</option>
+                                        <option value="accessories">✨ Accessories</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Price ($)</label>
+                                            <input type="number" class="form-control" name="price" step="0.01" min="0" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Stock</label>
+                                            <input type="number" class="form-control" name="stock_quantity" min="0" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Description</label>
+                                    <textarea class="form-control" name="description" rows="3"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Product Image</label>
+                                    <input type="file" class="form-control" name="image" accept="image/*">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-plus"></i> Add Product
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Your Products</h5>
+                        </div>
+                        <div class="card-body overflow-auto">
+                            <div id="vendorProducts" class="row">
+                                <!-- Vendor products will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Customer Section -->
+        <div id="customerSection" class="position-absolute w-100 h-100 transition-slide" style="transform: translateX(100%); transition: transform 0.5s ease;">
+            <div class="row h-100">
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-filter"></i> Filters
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Search</label>
+                                <input type="text" class="form-control" id="searchProducts" placeholder="Search products...">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Category</label>
+                                <select class="form-select" id="filterCategory">
+                                    <option value="">All Categories</option>
+                                    <option value="plants">🌱 Plants</option>
+                                    <option value="seeds">🌾 Seeds</option>
+                                    <option value="pots">🏺 Pots & Containers</option>
+                                    <option value="tools">🔧 Garden Tools</option>
+                                    <option value="soil">🌿 Soil & Fertilizers</option>
+                                    <option value="accessories">✨ Accessories</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Price Range</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="number" class="form-control" placeholder="Min" id="minPrice">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="number" class="form-control" placeholder="Max" id="maxPrice">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-outline-primary w-100" onclick="applyFilters()">
+                                <i class="fas fa-search"></i> Apply Filters
+                            </button>
+                            
+                            <hr>
+                            
+                            <div class="text-center">
+                                <button class="btn btn-success w-100" onclick="viewCart()">
+                                    <i class="fas fa-shopping-cart"></i> 
+                                    Cart (<span id="cartCount">{{ cart_count }}</span>)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-9">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Available Products</h5>
+                        </div>
+                        <div class="card-body overflow-auto">
+                            <div id="customerProducts" class="row">
+                                {% for product in products %}
+                                <div class="col-lg-4 col-md-6 mb-4 product-item" 
+                                     data-category="{{ product.category }}" 
+                                     data-name="{{ product.name.lower() }}"
+                                     data-price="{{ product.price }}">
+                                    <div class="card h-100 shadow-sm product-card">
+                                        {% if product.image_url %}
+                                        <img src="{{ url_for('static', filename=product.image_url) }}" 
+                                             class="card-img-top" 
+                                             style="height: 200px; object-fit: cover;">
+                                        {% else %}
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                             style="height: 200px;">
+                                            <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="card-title mb-0 fw-bold">{{ product.name }}</h6>
+                                                <span class="badge bg-primary">{{ product.category.title() }}</span>
+                                            </div>
+                                            
+                                            <p class="card-text text-muted small flex-grow-1">{{ product.description }}</p>
+                                            
+                                            <div class="mb-2">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-user"></i> {{ product.vendor_name }}
+                                                    {% if product.is_verified %}
+                                                    <i class="fas fa-check-circle text-primary"></i>
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="mt-auto">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h5 class="text-success mb-0 fw-bold">${{ "%.2f"|format(product.price) }}</h5>
+                                                    <small class="text-muted">Stock: {{ product.stock_quantity }}</small>
+                                                </div>
+                                                
+                                                <div class="d-flex gap-2">
+                                                    <div class="input-group input-group-sm flex-grow-1">
+                                                        <button class="btn btn-outline-secondary" type="button" 
+                                                                onclick="changeQuantity('{{ product.id }}', -1)">-</button>
+                                                        <input type="number" class="form-control text-center" 
+                                                               id="qty-{{ product.id }}" value="1" min="1" max="{{ product.stock_quantity }}">
+                                                        <button class="btn btn-outline-secondary" type="button" 
+                                                                onclick="changeQuantity('{{ product.id }}', 1)">+</button>
+                                                    </div>
+                                                    <button class="btn btn-success btn-sm" onclick="addToCart('{{ product.id }}')">
+                                                        <i class="fas fa-cart-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Default View -->
+        <div id="defaultView" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center">
+            <div class="text-center">
+                <i class="fas fa-store text-primary" style="font-size: 5rem; opacity: 0.3;"></i>
+                <h3 class="text-muted mt-3">Choose Your Experience</h3>
+                <p class="text-muted">Select whether you want to sell or buy products</p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <button class="btn btn-primary btn-lg" onclick="showVendorSection()">
+                        <i class="fas fa-plus"></i> I Want to Sell
+                    </button>
+                    <button class="btn btn-success btn-lg" onclick="showCustomerSection()">
+                        <i class="fas fa-shopping-bag"></i> I Want to Buy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Buttons -->
+    <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
+        <div class="btn-group-vertical">
+            <button class="btn btn-primary mb-2" onclick="showVendorSection()" title="Vendor Mode">
+                <i class="fas fa-store"></i>
+            </button>
+            <button class="btn btn-success mb-2" onclick="showCustomerSection()" title="Customer Mode">
+                <i class="fas fa-shopping-bag"></i>
+            </button>
+            <button class="btn btn-secondary" onclick="showDefaultView()" title="Home">
+                <i class="fas fa-home"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentSection = 'default';
+
+function showVendorSection() {
+    document.getElementById('vendorSection').style.transform = 'translateX(0)';
+    document.getElementById('customerSection').style.transform = 'translateX(100%)';
+    document.getElementById('defaultView').style.transform = 'translateX(-100%)';
+    currentSection = 'vendor';
+    loadVendorProducts();
+}
+
+function showCustomerSection() {
+    document.getElementById('vendorSection').style.transform = 'translateX(-100%)';
+    document.getElementById('customerSection').style.transform = 'translateX(0)';
+    document.getElementById('defaultView').style.transform = 'translateX(-100%)';
+    currentSection = 'customer';
+}
+
+function showDefaultView() {
+    document.getElementById('vendorSection').style.transform = 'translateX(-100%)';
+    document.getElementById('customerSection').style.transform = 'translateX(100%)';
+    document.getElementById('defaultView').style.transform = 'translateX(0)';
+    currentSection = 'default';
+}
+
+// Add Product Form
+document.getElementById('addProductForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('/add_product', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message);
+            this.reset();
+            loadVendorProducts();
+        } else {
+            showToast(data.error || 'Error adding product', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error adding product', 'error');
+    });
+});
+
+function loadVendorProducts() {
+    // This would typically fetch vendor's products from the server
+    // For now, we'll show a placeholder
+    document.getElementById('vendorProducts').innerHTML = `
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-box-open text-muted" style="font-size: 3rem;"></i>
+            <h5 class="text-muted mt-3">Your Products</h5>
+            <p class="text-muted">Products you add will appear here</p>
+        </div>
+    `;
+}
+
+function changeQuantity(productId, change) {
+    const input = document.getElementById('qty-' + productId);
+    const currentValue = parseInt(input.value);
+    const newValue = currentValue + change;
+    const max = parseInt(input.max);
+    
+    if (newValue >= 1 && newValue <= max) {
+        input.value = newValue;
+    }
+}
+
+function addToCart(productId) {
+    const quantity = document.getElementById('qty-' + productId).value;
+    
+    fetch(`/add_to_cart/${productId}?quantity=${quantity}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message);
+                updateCartCount();
+                
+                // Add visual feedback
+                const button = event.target;
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.classList.add('btn-success');
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-cart-plus"></i>';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-success');
+                }, 1000);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Error adding to cart', 'error');
+        });
+}
+
+function updateCartCount() {
+    // This would typically fetch the current cart count
+    const cartCount = document.getElementById('cartCount');
+    cartCount.textContent = parseInt(cartCount.textContent) + 1;
+}
+
+function applyFilters() {
+    const searchTerm = document.getElementById('searchProducts').value.toLowerCase();
+    const selectedCategory = document.getElementById('filterCategory').value;
+    const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+    
+    const productItems = document.querySelectorAll('.product-item');
+    
+    productItems.forEach(item => {
+        const productName = item.dataset.name;
+        const productCategory = item.dataset.category;
+        const productPrice = parseFloat(item.dataset.price);
+        
+        const matchesSearch = productName.includes(searchTerm);
+        const matchesCategory = !selectedCategory || productCategory === selectedCategory;
+        const matchesPrice = productPrice >= minPrice && productPrice <= maxPrice;
+        
+        if (matchesSearch && matchesCategory && matchesPrice) {
+            item.style.display = 'block';
+            item.classList.add('fade-in-up');
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function viewCart() {
+    showToast('Cart functionality coming soon! 🛒');
+}
+
+// Real-time search
+document.getElementById('searchProducts').addEventListener('input', applyFilters);
+document.getElementById('filterCategory').addEventListener('change', applyFilters);
+</script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Chat with {{ chat_user.first_name }} - GreenVerse{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <a href="{{ url_for('messages') }}" class="text-decoration-none">
+                            <i class="fas fa-arrow-left"></i> Messages
+                        </a>
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle text-primary" style="font-size: 4rem;"></i>
+                    <h5 class="mt-3">{{ chat_user.first_name }} {{ chat_user.last_name }}</h5>
+                    <p class="text-muted">@{{ chat_user.username }}</p>
+                    {% if chat_user.bio %}
+                    <p class="small">{{ chat_user.bio }}</p>
+                    {% endif %}
+                    <a href="{{ url_for('profile', username=chat_user.username) }}" class="btn btn-outline-primary btn-sm">
+                        View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-circle text-primary me-3" style="font-size: 2rem;"></i>
+                        <div>
+                            <h6 class="mb-0">{{ chat_user.first_name }} {{ chat_user.last_name }}</h6>
+                            <small class="text-muted">@{{ chat_user.username }}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body" style="height: 400px; overflow-y: auto;" id="messagesContainer">
+                    {% for message in messages %}
+                    <div class="mb-3 {{ 'text-end' if message.sender_id == user.id else '' }}">
+                        <div class="d-inline-block p-2 rounded {{ 'bg-primary text-white' if message.sender_id == user.id else 'bg-light' }}" style="max-width: 70%;">
+                            <div class="message-content">{{ message.content }}</div>
+                            <small class="d-block mt-1 {{ 'text-white-50' if message.sender_id == user.id else 'text-muted' }}">
+                                {{ message.created_at }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="card-footer">
+                    <div class="d-flex">
+                        <input type="text" class="form-control" id="messageInput" placeholder="Type your message..." maxlength="500">
+                        <button class="btn btn-primary ms-2" id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chatUserId = '{{ chat_user.id }}';
+const messagesContainer = document.getElementById('messagesContainer');
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
+
+// Scroll to bottom of messages
+function scrollToBottom() {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Send message
+function sendMessage() {
+    const content = messageInput.value.trim();
+    if (!content) return;
+    
+    fetch(`/send_message/${chatUserId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: content })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Add message to chat
+        const messageHtml = `
+            <div class="mb-3 text-end">
+                <div class="d-inline-block p-2 rounded bg-primary text-white" style="max-width: 70%;">
+                    <div class="message-content">${data.content}</div>
+                    <small class="d-block mt-1 text-white-50">
+                        ${data.created_at}
+                    </small>
+                </div>
+            </div>
+        `;
+        messagesContainer.innerHTML += messageHtml;
+        messageInput.value = '';
+        scrollToBottom();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Event listeners
+sendButton.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+// Initial scroll to bottom
+scrollToBottom();
+</script>
+{% endblock %}
