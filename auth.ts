@@ -1,113 +1,94 @@
-"use server"
+import { supabase } from "./supabase"
+import * as fallbackAuth from "./auth-fallback"
 
-import { redirect } from "next/navigation"
-import { createUser, authenticateUser } from "@/lib/auth"
-import { createSession, deleteSession } from "@/lib/session"
-import { revalidatePath } from "next/cache"
-
-export async function signup(prevState: any, formData: FormData) {
-  try {
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
-    const email = formData.get("email") as string
-    const username = formData.get("username") as string
-    const password = formData.get("password") as string
-    const confirmPassword = formData.get("confirmPassword") as string
-
-    console.log("Signup attempt for:", email)
-
-    // Validation
-    if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
-      return { error: "All fields are required" }
-    }
-
-    if (password !== confirmPassword) {
-      return { error: "Passwords do not match" }
-    }
-
-    if (password.length < 3) {
-      return { error: "Password must be at least 3 characters long" }
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return { error: "Please enter a valid email address" }
-    }
-
-    // Username validation
-    if (username.length < 3) {
-      return { error: "Username must be at least 3 characters long" }
-    }
-
-    const user = await createUser({
-      email: email.toLowerCase().trim(),
-      username: username.toLowerCase().trim(),
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      password,
-    })
-
-    console.log("User created successfully, creating session")
-    await createSession(user)
-
-    console.log("Session created, revalidating path")
-    revalidatePath("/")
-
-    console.log("Signup process completed successfully")
-  } catch (error: any) {
-    console.error("Signup error:", error)
-
-    if (
-      error.message.includes("duplicate") ||
-      error.message.includes("unique") ||
-      error.message.includes("already exists")
-    ) {
-      return { error: "Email or username already exists" }
-    }
-
-    return { error: error.message || "Failed to create account. Please try again." }
-  }
-
-  redirect("/dashboard")
+export interface User {
+  id: string
+  email: string
+  username: string
+  first_name: string
+  last_name: string
+  avatar_url?: string
+  bio?: string
+  location?: string
+  growing_zone?: string
+  created_at: string
 }
 
-export async function login(prevState: any, formData: FormData) {
-  try {
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-
-    console.log("Login attempt for:", email)
-
-    if (!email || !password) {
-      return { error: "Email and password are required" }
-    }
-
-    const user = await authenticateUser(email.toLowerCase().trim(), password)
-
-    console.log("User authenticated successfully, creating session")
-    await createSession(user)
-
-    console.log("Session created, revalidating path")
-    revalidatePath("/")
-
-    console.log("Login process completed successfully")
-  } catch (error: any) {
-    console.error("Login error:", error)
-    return { error: "Invalid email or password" }
-  }
-
-  redirect("/dashboard")
+// Simple hash function for demo purposes
+function simpleHash(password: string): string {
+  return Buffer.from(password).toString("base64")
 }
 
-export async function logout() {
+function verifySimpleHash(password: string, hash: string): boolean {
+  return Buffer.from(password).toString("base64") === hash
+}
+
+// Check if we should use Supabase or fallback
+let useSupabase = true
+
+async function checkSupabaseAvailability() {
   try {
-    console.log("Logout initiated")
-    await deleteSession()
-    revalidatePath("/")
-    console.log("Logout completed successfully")
+    // Skip Supabase check for now and use fallback
+    console.log("Using fallback authentication system")
+    useSupabase = false
+    return false
   } catch (error) {
-    console.error("Logout error:", error)
+    console.log("Using fallback authentication")
+    useSupabase = false
+    return false
   }
-  redirect("/auth/login")
+}
+
+export async function createUser(userData: {
+  email: string
+  username: string
+  firstName: string
+  lastName: string
+  password: string
+}) {
+  try {
+    console.log("Using fallback authentication for user creation")
+    return await fallbackAuth.createUser(userData)
+  } catch (error: any) {
+    console.error("Error in createUser:", error)
+    throw error
+  }
+}
+
+export async function authenticateUser(email: string, password: string) {
+  try {
+    console.log("Using fallback authentication for login")
+    return await fallbackAuth.authenticateUser(email, password)
+  } catch (error: any) {
+    console.error("Error in authenticateUser:", error)
+    throw error
+  }
+}
+
+export async function getUserById(id: string) {
+  try {
+    if (!useSupabase) {
+      return await fallbackAuth.getUserById(id)
+    }
+
+    const { data: user, error } = await supabase.from("users").select("*").eq("id", id).single()
+
+    if (error) {
+      console.error("Supabase error in getUserById, falling back:", error)
+      useSupabase = false
+      return await fallbackAuth.getUserById(id)
+    }
+
+    const { password_hash, ...userWithoutPassword } = user
+    return userWithoutPassword
+  } catch (error: any) {
+    console.error("Error in getUserById, trying fallback:", error)
+
+    if (error.message && error.message.includes("JSON")) {
+      useSupabase = false
+      return await fallbackAuth.getUserById(id)
+    }
+
+    throw error
+  }
 }
